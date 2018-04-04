@@ -19,7 +19,7 @@ npm install --save react-native-counter
 import Counter from 'react-native-counter';
 
 <Counter
-  end={}                        // REQUIRED End of the counter
+  target={}                        // REQUIRED End of the counter
   start={0}                     // Beginning of the counter
   time={1000}                   // Duration (in ms) of the counter
   digits={0}                    // Number of digits after the comma
@@ -30,6 +30,8 @@ import Counter from 'react-native-counter';
 ```
 
 The easing prop is a string corresponding to one of any function from [eases](https://github.com/mattdesl/eases).
+
+Updating target props will trigger the animation automatically
 
 # License
 
