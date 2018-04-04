@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { Text } from 'react-native';
 import eases from 'eases';
+import PropTypes from 'prop-types';
 
 export default class Counter extends Component {
   static propTypes = {
     start: PropTypes.number,
-    end: PropTypes.number.isRequired,
+    target: PropTypes.number.isRequired,
     digits: PropTypes.number,
     time: PropTypes.number,
     easing: PropTypes.string,
@@ -24,7 +24,23 @@ export default class Counter extends Component {
   state = { value: this.props.start };
 
   componentDidMount() {
+    if (this.props.target !== this.state.value) {
+      this.initiate(this.props.target);
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.target !== nextProps.target) {
+      console.log('re');
+      this.initiate(nextProps.target);
+    }
+  }
+
+  initiate(targetValue) {
+    this.stop = false;
     this.startTime = Date.now();
+    this.initialValue = this.state.value;
+    this.targetValue = targetValue;
     requestAnimationFrame(this.animate.bind(this));
   }
 
@@ -41,13 +57,13 @@ export default class Counter extends Component {
   }
 
   draw() {
-    const { time, start, end, easing } = this.props;
-
+    const { time, easing } = this.props;
+    const { initialValue, targetValue, startTime } = this;
     const now = Date.now();
-    if (now - this.startTime >= time) this.stop = true;
-    const percentage = Math.min((now - this.startTime) / time, 1);
+    if (now - startTime >= time) this.stop = true;
+    const percentage = Math.min((now - startTime) / time, 1);
     const easeVal = eases[easing](percentage);
-    const value = start + (end - start) * easeVal;
+    const value = initialValue + (targetValue - initialValue) * easeVal;
 
     this.setState({ value });
   }
